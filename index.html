@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>สุ่มดูดวง</title>
+<title>สุ่มเลขตอบคำถาม</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;500;700&display=swap');
@@ -19,20 +19,20 @@ body {
 }
 
 .container {
-  padding: 40px 20px;
+  padding: 35px 20px;
   position: relative;
   z-index: 2;
 }
 
 .page-name {
-  font-size: 22px;
+  color: gold;
   letter-spacing: 2px;
-  color: #ffd700;
-  margin-bottom: 8px;
+  font-size: 22px;
+  margin-bottom: 6px;
 }
 
 h1 {
-  font-size: 28px;
+  font-size: 26px;
 }
 
 .subtitle {
@@ -40,93 +40,126 @@ h1 {
   font-size: 15px;
 }
 
+/* ไพ่ */
+.card-box {
+  margin: 30px auto;
+  width: 180px;
+  height: 260px;
+  perspective: 1000px;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #2c2c54, #0b1d3a);
+  box-shadow: 0 0 30px rgba(255,215,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  color: gold;
+  transform-style: preserve-3d;
+  animation: none;
+}
+
+.card.spin {
+  animation: spin 1.2s ease-in-out;
+}
+
+@keyframes spin {
+  0%   { transform: rotateY(0deg); }
+  100% { transform: rotateY(720deg); }
+}
+
+/* ปุ่ม */
 button {
-  margin-top: 35px;
-  padding: 16px 45px;
-  font-size: 20px;
+  padding: 14px 40px;
+  font-size: 18px;
   border-radius: 50px;
   border: none;
   cursor: pointer;
   background: linear-gradient(45deg, #ffd700, #ffec8b);
   color: #000;
   box-shadow: 0 0 25px rgba(255,215,0,0.8);
+  margin: 10px;
 }
 
 button:disabled {
   opacity: 0.6;
 }
 
+/* ผลลัพธ์ */
 .result {
-  margin-top: 35px;
-  padding: 25px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(6px);
+  margin-top: 20px;
+  font-size: 18px;
+  display: none;
 }
 
 .number {
-  font-size: 54px;
-  color: #ffd700;
-  margin: 15px 0;
-  text-shadow: 0 0 20px rgba(255,215,0,0.9);
-  transition: transform 0.2s ease;
+  font-size: 40px;
+  color: gold;
+  margin: 8px 0;
+  text-shadow: 0 0 15px rgba(255,215,0,0.8);
 }
 
-.number.glow {
-  animation: glow 1s ease;
-}
-
-@keyframes glow {
-  0% { text-shadow: 0 0 5px gold; }
-  50% { text-shadow: 0 0 30px gold; }
-  100% { text-shadow: 0 0 15px gold; }
-}
-
-/* ดาวระยิบ */
+/* ดาว */
 .star {
   position: absolute;
   width: 2px;
   height: 2px;
   background: white;
-  opacity: 0.7;
-  animation: twinkle 4s infinite ease-in-out;
+  opacity: 0.6;
+  animation: twinkle 4s infinite;
 }
 
 @keyframes twinkle {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 1; }
+  0%,100% {opacity:0.2}
+  50% {opacity:1}
 }
 </style>
 </head>
 
 <body>
 
+<!-- ดาวพื้นหลัง -->
 <script>
 for (let i = 0; i < 40; i++) {
-  let star = document.createElement("div");
-  star.className = "star";
-  star.style.left = Math.random() * 100 + "vw";
-  star.style.top = Math.random() * 100 + "vh";
-  star.style.animationDelay = Math.random() * 4 + "s";
-  document.body.appendChild(star);
+  let s = document.createElement("div");
+  s.className = "star";
+  s.style.left = Math.random() * 100 + "vw";
+  s.style.top = Math.random() * 100 + "vh";
+  s.style.animationDelay = Math.random() * 4 + "s";
+  document.body.appendChild(s);
 }
 </script>
 
-<div class="container">
+<div class="container" id="captureArea">
   <!-- 🔮 เปลี่ยนชื่อเพจ -->
   <div class="page-name">HOOR HAD DO DUAG</div>
 
-  <h1>🔮 สุ่มเลขนำโชค</h1>
-  <div class="subtitle">พลังจักรวาลกำลังเลือกให้คุณ</div>
+  <h1>🔮 ไพ่พยากรณ์โชค</h1>
+  <div class="subtitle">โชคชะตากำลังเลือกให้คุณ</div>
 
-  <button id="btn">กดสุ่มเลข</button>
+  <div class="card-box">
+    <div class="card" id="card">?</div>
+  </div>
 
-  <div class="result">
+  <button id="spinBtn">สุ่มไพ่</button>
+
+  <div class="result" id="result">
     <div>เลขของคุณคือ</div>
-    <div class="number" id="num">---</div>
+    <div class="number" id="num"></div>
     <div id="fortune"></div>
+    <br>
+    <button onclick="captureAndComment()">📸 แคปจอ & กลับไปคอมเมนต์</button>
   </div>
 </div>
+
+<!-- เสียงตอนหยุด -->
+<audio id="ding">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-magic-bell-594.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 const fortunes = [
@@ -143,44 +176,42 @@ const fortunes = [
   "🌟 วันนี้คือวันเริ่มต้นของสิ่งดีๆ"
 ];
 
-const btn = document.getElementById("btn");
+const card = document.getElementById("card");
+const btn = document.getElementById("spinBtn");
+const result = document.getElementById("result");
 const numEl = document.getElementById("num");
 const fortuneEl = document.getElementById("fortune");
+const ding = document.getElementById("ding");
 
 btn.addEventListener("click", () => {
   btn.disabled = true;
-  fortuneEl.innerText = "";
+  result.style.display = "none";
+  card.classList.add("spin");
+  card.innerText = "?";
 
-  let count = 0;
-  let speed = 50; // เริ่มเร็ว
-  let finalNum = Math.floor(Math.random() * 1000)
-                    .toString().padStart(3,'0');
+  setTimeout(() => {
+    let num = Math.floor(Math.random() * 1000)
+      .toString().padStart(3,'0');
 
-  function spin() {
-    let temp = Math.floor(Math.random() * 1000)
-                  .toString().padStart(3,'0');
-    numEl.innerText = temp;
-    count++;
+    card.classList.remove("spin");
+    card.innerText = num;
+    ding.play();
 
-    if (count < 25) {
-      setTimeout(spin, speed);
-      speed += 15; // ช้าลงเรื่อย ๆ
-    } else {
-      numEl.innerText = finalNum;
-      numEl.classList.add("glow");
+    numEl.innerText = num;
+    fortuneEl.innerText =
+      fortunes[Math.floor(Math.random() * fortunes.length)];
 
-      fortuneEl.innerText =
-        fortunes[Math.floor(Math.random() * fortunes.length)];
-
-      setTimeout(() => {
-        numEl.classList.remove("glow");
-        btn.disabled = false;
-      }, 1200);
-    }
-  }
-
-  spin();
+    result.style.display = "block";
+    btn.disabled = false;
+  }, 1200);
 });
+
+// แคปจอ + กลับไป Facebook
+function captureAndComment() {
+  alert("📸 กรุณาแคปหน้าจอ แล้วระบบจะพากลับไปคอมเมนต์ที่โพสต์");
+  // 🔗 ใส่ลิงก์โพสต์ Facebook ของคุณตรงนี้
+  window.location.href = "https://www.facebook.com/";
+}
 </script>
 
 </body>
