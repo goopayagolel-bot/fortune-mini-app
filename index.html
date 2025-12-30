@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>สุ่มเลขตอบคำถาม</title>
+<title>วงล้อสุ่มเลข</title>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;500;700&display=swap');
@@ -28,48 +28,32 @@ body {
   color: gold;
   letter-spacing: 2px;
   font-size: 22px;
-  margin-bottom: 6px;
-}
-
-h1 {
-  font-size: 26px;
 }
 
 .subtitle {
   color: #c7d2ff;
-  font-size: 15px;
+  margin-bottom: 25px;
 }
 
-/* ไพ่ */
-.card-box {
-  margin: 30px auto;
-  width: 180px;
-  height: 260px;
-  perspective: 1000px;
+/* วงล้อ */
+.slot-box {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin: 25px 0;
 }
 
-.card {
-  width: 100%;
-  height: 100%;
-  border-radius: 18px;
-  background: linear-gradient(135deg, #2c2c54, #0b1d3a);
-  box-shadow: 0 0 30px rgba(255,215,0,0.4);
+.slot {
+  width: 80px;
+  height: 100px;
+  border-radius: 15px;
+  background: linear-gradient(180deg, #2b3a67, #0b1d3a);
+  box-shadow: 0 0 20px rgba(255,215,0,0.5);
+  font-size: 48px;
+  color: gold;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 42px;
-  color: gold;
-  transform-style: preserve-3d;
-  animation: none;
-}
-
-.card.spin {
-  animation: spin 1.2s ease-in-out;
-}
-
-@keyframes spin {
-  0%   { transform: rotateY(0deg); }
-  100% { transform: rotateY(720deg); }
 }
 
 /* ปุ่ม */
@@ -82,25 +66,22 @@ button {
   background: linear-gradient(45deg, #ffd700, #ffec8b);
   color: #000;
   box-shadow: 0 0 25px rgba(255,215,0,0.8);
-  margin: 10px;
+  margin-top: 10px;
 }
 
 button:disabled {
   opacity: 0.6;
 }
 
-/* ผลลัพธ์ */
 .result {
-  margin-top: 20px;
-  font-size: 18px;
   display: none;
+  margin-top: 20px;
 }
 
 .number {
-  font-size: 40px;
+  font-size: 36px;
   color: gold;
-  margin: 8px 0;
-  text-shadow: 0 0 15px rgba(255,215,0,0.8);
+  margin: 10px 0;
 }
 
 /* ดาว */
@@ -112,17 +93,15 @@ button:disabled {
   opacity: 0.6;
   animation: twinkle 4s infinite;
 }
-
 @keyframes twinkle {
-  0%,100% {opacity:0.2}
-  50% {opacity:1}
+  0%,100%{opacity:0.2}
+  50%{opacity:1}
 }
 </style>
 </head>
 
 <body>
 
-<!-- ดาวพื้นหลัง -->
 <script>
 for (let i = 0; i < 40; i++) {
   let s = document.createElement("div");
@@ -135,84 +114,49 @@ for (let i = 0; i < 40; i++) {
 </script>
 
 <div class="container" id="captureArea">
-  <!-- 🔮 เปลี่ยนชื่อเพจ -->
   <div class="page-name">HOOR HAD DO DUAG</div>
+  <h1>🔮 วงล้อเลขนำโชค</h1>
+  <div class="subtitle">พลังจักรวาลกำลังหมุนหาเลขของคุณ</div>
 
-  <h1>🔮 ไพ่พยากรณ์โชค</h1>
-  <div class="subtitle">โชคชะตากำลังเลือกให้คุณ</div>
-
-  <div class="card-box">
-    <div class="card" id="card">?</div>
+  <div class="slot-box">
+    <div class="slot" id="s1">0</div>
+    <div class="slot" id="s2">0</div>
+    <div class="slot" id="s3">0</div>
   </div>
 
-  <button id="spinBtn">สุ่มไพ่</button>
+  <button id="spinBtn">หมุนวงล้อ</button>
 
   <div class="result" id="result">
-    <div>เลขของคุณคือ</div>
-    <div class="number" id="num"></div>
-    <div id="fortune"></div>
+    <div>เลขนำโชคของคุณ</div>
+    <div class="number" id="finalNum"></div>
     <br>
-    <button onclick="captureAndComment()">📸 แคปจอ & กลับไปคอมเมนต์</button>
+    <button onclick="captureAndComment()">📸 แคปจอ & ไปคอมเมนต์</button>
   </div>
 </div>
 
-<!-- เสียงตอนหยุด -->
 <audio id="ding">
   <source src="https://assets.mixkit.co/sfx/preview/mixkit-magic-bell-594.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-const fortunes = [
-  "🌟 เชื่อในพลังของตัวเอง แล้วโชคจะเปิดทาง",
-  "🔥 อย่ายอมแพ้ ความสำเร็จใกล้กว่าที่เห็น",
-  "✨ พลังดีๆ กำลังเดินทางมาหาคุณ",
-  "🌙 สิ่งที่ใช่ จะมาหาเราในเวลาที่เหมาะสม",
-  "💫 วันนี้อาจไม่ง่าย แต่ดวงคุณยังไปต่อ",
-  "🌈 พรุ่งนี้ต้องดีกว่าวันนี้แน่นอน",
-  "🧿 ดวงเปิด คนปัง โชคมา",
-  "🔮 อดทนอีกนิด ชะตากำลังเปลี่ยน",
-  "✨ คิดดี พูดดี ดวงดี",
-  "🌌 เมื่อใจนิ่ง ดวงจะนิ่งตาม",
-  "🌟 วันนี้คือวันเริ่มต้นของสิ่งดีๆ"
+const slots = [
+  document.getElementById("s1"),
+  document.getElementById("s2"),
+  document.getElementById("s3")
 ];
-
-const card = document.getElementById("card");
 const btn = document.getElementById("spinBtn");
 const result = document.getElementById("result");
-const numEl = document.getElementById("num");
-const fortuneEl = document.getElementById("fortune");
+const finalNum = document.getElementById("finalNum");
 const ding = document.getElementById("ding");
 
 btn.addEventListener("click", () => {
   btn.disabled = true;
   result.style.display = "none";
-  card.classList.add("spin");
-  card.innerText = "?";
 
-  setTimeout(() => {
-    let num = Math.floor(Math.random() * 1000)
-      .toString().padStart(3,'0');
+  let final = [
+    Math.floor(Math.random()*10),
+    Math.floor(Math.random()*10),
+    Math.floor(Math.random()*10)
+  ];
 
-    card.classList.remove("spin");
-    card.innerText = num;
-    ding.play();
-
-    numEl.innerText = num;
-    fortuneEl.innerText =
-      fortunes[Math.floor(Math.random() * fortunes.length)];
-
-    result.style.display = "block";
-    btn.disabled = false;
-  }, 1200);
-});
-
-// แคปจอ + กลับไป Facebook
-function captureAndComment() {
-  alert("📸 กรุณาแคปหน้าจอ แล้วระบบจะพากลับไปคอมเมนต์ที่โพสต์");
-  // 🔗 ใส่ลิงก์โพสต์ Facebook ของคุณตรงนี้
-  window.location.href = "https://www.facebook.com/";
-}
-</script>
-
-</body>
-</html>
+  slo
