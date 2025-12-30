@@ -3,53 +3,127 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>สุ่มเลขนำโชคของคุณ</title>
+<title>สุ่มดูดวง</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;500;700&display=swap');
+
 body {
   margin: 0;
-  font-family: sans-serif;
-  background: linear-gradient(135deg, #0b1d3a, #1b2d5c);
-  color: #ffffff;
+  font-family: 'Prompt', sans-serif;
+  background: radial-gradient(circle at top, #1b2d5c, #050b1e);
+  color: #fff;
   text-align: center;
+  min-height: 100vh;
+  overflow: hidden;
 }
+
 .container {
-  padding: 30px 20px;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 2;
 }
+
+.page-name {
+  font-size: 22px;
+  letter-spacing: 2px;
+  color: #ffd700;
+  margin-bottom: 8px;
+}
+
 h1 {
-  font-size: 26px;
+  font-size: 28px;
 }
+
+.subtitle {
+  color: #c7d2ff;
+  font-size: 15px;
+}
+
 button {
-  margin-top: 30px;
-  padding: 16px 40px;
+  margin-top: 35px;
+  padding: 16px 45px;
   font-size: 20px;
   border-radius: 50px;
   border: none;
-  background: linear-gradient(45deg, gold, #ffd700);
   cursor: pointer;
+  background: linear-gradient(45deg, #ffd700, #ffec8b);
+  color: #000;
+  box-shadow: 0 0 25px rgba(255,215,0,0.8);
 }
+
+button:disabled {
+  opacity: 0.6;
+}
+
 .result {
-  margin-top: 30px;
-  background: rgba(255,255,255,0.1);
-  padding: 20px;
-  border-radius: 15px;
-  display: none;
+  margin-top: 35px;
+  padding: 25px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(6px);
 }
+
 .number {
-  font-size: 42px;
-  color: gold;
+  font-size: 54px;
+  color: #ffd700;
+  margin: 15px 0;
+  text-shadow: 0 0 20px rgba(255,215,0,0.9);
+  transition: transform 0.2s ease;
+}
+
+.number.glow {
+  animation: glow 1s ease;
+}
+
+@keyframes glow {
+  0% { text-shadow: 0 0 5px gold; }
+  50% { text-shadow: 0 0 30px gold; }
+  100% { text-shadow: 0 0 15px gold; }
+}
+
+/* ดาวระยิบ */
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  opacity: 0.7;
+  animation: twinkle 4s infinite ease-in-out;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
 }
 </style>
 </head>
 
 <body>
-<div class="container">
-  <h1>🔮 สุ่มเลขนำโชคของคุณ</h1>
-  <button onclick="randomFortune()">กดสุ่ม</button>
 
-  <div class="result" id="result">
-    <div>คำตอบของคุณคือตัวเลข</div>
-    <div class="number" id="num"></div>
+<script>
+for (let i = 0; i < 40; i++) {
+  let star = document.createElement("div");
+  star.className = "star";
+  star.style.left = Math.random() * 100 + "vw";
+  star.style.top = Math.random() * 100 + "vh";
+  star.style.animationDelay = Math.random() * 4 + "s";
+  document.body.appendChild(star);
+}
+</script>
+
+<div class="container">
+  <!-- 🔮 เปลี่ยนชื่อเพจ -->
+  <div class="page-name">HOOR HAD DO DUAG</div>
+
+  <h1>🔮 สุ่มเลขนำโชค</h1>
+  <div class="subtitle">พลังจักรวาลกำลังเลือกให้คุณ</div>
+
+  <button id="btn">กดสุ่มเลข</button>
+
+  <div class="result">
+    <div>เลขของคุณคือ</div>
+    <div class="number" id="num">---</div>
     <div id="fortune"></div>
   </div>
 </div>
@@ -69,18 +143,45 @@ const fortunes = [
   "🌟 วันนี้คือวันเริ่มต้นของสิ่งดีๆ"
 ];
 
-function randomFortune() {
-  let num = Math.floor(Math.random() * 1000)
-    .toString().padStart(3,'0');
+const btn = document.getElementById("btn");
+const numEl = document.getElementById("num");
+const fortuneEl = document.getElementById("fortune");
 
-  let fortune = fortunes[
-    Math.floor(Math.random() * fortunes.length)
-  ];
+btn.addEventListener("click", () => {
+  btn.disabled = true;
+  fortuneEl.innerText = "";
 
-  document.getElementById("num").innerText = num;
-  document.getElementById("fortune").innerText = fortune;
-  document.getElementById("result").style.display = "block";
-}
+  let count = 0;
+  let speed = 50; // เริ่มเร็ว
+  let finalNum = Math.floor(Math.random() * 1000)
+                    .toString().padStart(3,'0');
+
+  function spin() {
+    let temp = Math.floor(Math.random() * 1000)
+                  .toString().padStart(3,'0');
+    numEl.innerText = temp;
+    count++;
+
+    if (count < 25) {
+      setTimeout(spin, speed);
+      speed += 15; // ช้าลงเรื่อย ๆ
+    } else {
+      numEl.innerText = finalNum;
+      numEl.classList.add("glow");
+
+      fortuneEl.innerText =
+        fortunes[Math.floor(Math.random() * fortunes.length)];
+
+      setTimeout(() => {
+        numEl.classList.remove("glow");
+        btn.disabled = false;
+      }, 1200);
+    }
+  }
+
+  spin();
+});
 </script>
+
 </body>
 </html>
