@@ -4,159 +4,76 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>วงล้อสุ่มเลข</title>
-
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;500;700&display=swap');
-
-body {
-  margin: 0;
-  font-family: 'Prompt', sans-serif;
-  background: radial-gradient(circle at top, #1b2d5c, #050b1e);
-  color: #fff;
-  text-align: center;
-  min-height: 100vh;
-  overflow: hidden;
+body{
+  background:#0b1d3a;
+  color:white;
+  font-family:sans-serif;
+  text-align:center;
+  padding-top:50px;
 }
-
-.container {
-  padding: 35px 20px;
-  position: relative;
-  z-index: 2;
+.slot-box{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  margin:30px 0;
 }
-
-.page-name {
-  color: gold;
-  letter-spacing: 2px;
-  font-size: 22px;
+.slot{
+  width:70px;
+  height:90px;
+  background:#1b2d5c;
+  border-radius:15px;
+  font-size:42px;
+  color:gold;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
-
-.subtitle {
-  color: #c7d2ff;
-  margin-bottom: 25px;
-}
-
-/* วงล้อ */
-.slot-box {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin: 25px 0;
-}
-
-.slot {
-  width: 80px;
-  height: 100px;
-  border-radius: 15px;
-  background: linear-gradient(180deg, #2b3a67, #0b1d3a);
-  box-shadow: 0 0 20px rgba(255,215,0,0.5);
-  font-size: 48px;
-  color: gold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* ปุ่ม */
-button {
-  padding: 14px 40px;
-  font-size: 18px;
-  border-radius: 50px;
-  border: none;
-  cursor: pointer;
-  background: linear-gradient(45deg, #ffd700, #ffec8b);
-  color: #000;
-  box-shadow: 0 0 25px rgba(255,215,0,0.8);
-  margin-top: 10px;
-}
-
-button:disabled {
-  opacity: 0.6;
-}
-
-.result {
-  display: none;
-  margin-top: 20px;
-}
-
-.number {
-  font-size: 36px;
-  color: gold;
-  margin: 10px 0;
-}
-
-/* ดาว */
-.star {
-  position: absolute;
-  width: 2px;
-  height: 2px;
-  background: white;
-  opacity: 0.6;
-  animation: twinkle 4s infinite;
-}
-@keyframes twinkle {
-  0%,100%{opacity:0.2}
-  50%{opacity:1}
+button{
+  padding:15px 40px;
+  font-size:18px;
+  border-radius:30px;
+  border:none;
+  background:gold;
 }
 </style>
 </head>
 
 <body>
 
+<h2>🔮 วงล้อเลขนำโชค</h2>
+
+<div class="slot-box">
+  <div class="slot" id="a">0</div>
+  <div class="slot" id="b">0</div>
+  <div class="slot" id="c">0</div>
+</div>
+
+<button onclick="spin()">หมุนวงล้อ</button>
+
 <script>
-for (let i = 0; i < 40; i++) {
-  let s = document.createElement("div");
-  s.className = "star";
-  s.style.left = Math.random() * 100 + "vw";
-  s.style.top = Math.random() * 100 + "vh";
-  s.style.animationDelay = Math.random() * 4 + "s";
-  document.body.appendChild(s);
+function spinSlot(el, final, delay){
+  let count = 0;
+  let timer = setInterval(()=>{
+    el.innerText = Math.floor(Math.random()*10);
+    count++;
+    if(count > delay){
+      clearInterval(timer);
+      el.innerText = final;
+    }
+  }, 80);
+}
+
+function spin(){
+  let n1 = Math.floor(Math.random()*10);
+  let n2 = Math.floor(Math.random()*10);
+  let n3 = Math.floor(Math.random()*10);
+
+  spinSlot(document.getElementById("a"), n1, 15);
+  spinSlot(document.getElementById("b"), n2, 25);
+  spinSlot(document.getElementById("c"), n3, 35);
 }
 </script>
 
-<div class="container" id="captureArea">
-  <div class="page-name">HOOR HAD DO DUAG</div>
-  <h1>🔮 วงล้อเลขนำโชค</h1>
-  <div class="subtitle">พลังจักรวาลกำลังหมุนหาเลขของคุณ</div>
-
-  <div class="slot-box">
-    <div class="slot" id="s1">0</div>
-    <div class="slot" id="s2">0</div>
-    <div class="slot" id="s3">0</div>
-  </div>
-
-  <button id="spinBtn">หมุนวงล้อ</button>
-
-  <div class="result" id="result">
-    <div>เลขนำโชคของคุณ</div>
-    <div class="number" id="finalNum"></div>
-    <br>
-    <button onclick="captureAndComment()">📸 แคปจอ & ไปคอมเมนต์</button>
-  </div>
-</div>
-
-<audio id="ding">
-  <source src="https://assets.mixkit.co/sfx/preview/mixkit-magic-bell-594.mp3" type="audio/mpeg">
-</audio>
-
-<script>
-const slots = [
-  document.getElementById("s1"),
-  document.getElementById("s2"),
-  document.getElementById("s3")
-];
-const btn = document.getElementById("spinBtn");
-const result = document.getElementById("result");
-const finalNum = document.getElementById("finalNum");
-const ding = document.getElementById("ding");
-
-btn.addEventListener("click", () => {
-  btn.disabled = true;
-  result.style.display = "none";
-
-  let final = [
-    Math.floor(Math.random()*10),
-    Math.floor(Math.random()*10),
-    Math.floor(Math.random()*10)
-  ];
-
-  slo
+</body>
+</html>
