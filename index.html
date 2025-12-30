@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สุ่มดูดวง</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Prompt', sans-serif;
+  background: linear-gradient(135deg, #0b1d3a, #1b2d5c);
+  color: #ffffff;
+  text-align: center;
+}
+
+.container {
+  padding: 30px 20px;
+}
+
+h1 {
+  font-size: 26px;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #cfd8ff;
+  font-size: 16px;
+}
+
+button {
+  margin-top: 30px;
+  padding: 16px 40px;
+  font-size: 20px;
+  border-radius: 50px;
+  border: none;
+  background: linear-gradient(45deg, gold, #ffd700);
+  color: #000;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(255,215,0,0.6);
+}
+
+.result {
+  margin-top: 30px;
+  font-size: 22px;
+  background: rgba(255,255,255,0.1);
+  padding: 20px;
+  border-radius: 15px;
+  display: none;
+}
+
+.number {
+  font-size: 42px;
+  color: gold;
+  margin: 10px 0;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h1>🔮 สุ่มดูดวงประจำวัน</h1>
+  <div class="subtitle">พลังจักรวาลกำลังเลือกข้อความให้คุณ</div>
+
+  <button onclick="randomFortune()">กดสุ่มคำทำนาย</button>
+
+  <div class="result" id="result">
+    <div>เลขนำโชคของคุณ</div>
+    <div class="number" id="num"></div>
+    <div id="fortune"></div>
+  </div>
+</div>
+
+<script>
+const fortunes = [
+  "วันนี้มีเกณฑ์ได้โชคจากการพูดจา",
+  "การเงินมีทางเข้าแบบไม่คาดคิด",
+  "คนเก่าจะกลับมาให้ใจสั่น",
+  "สิ่งที่รออยู่ใกล้กว่าที่คิด",
+  "ระวังคำพูดจะนำพาโชคหรือเคราะห์",
+  "มีคนอุปถัมภ์ช่วยเหลือแบบลับ ๆ"
+];
+
+function randomFortune() {
+  let num = Math.floor(Math.random() * 1000)
+              .toString().padStart(3,'0');
+  let fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+
+  document.getElementById("num").innerText = num;
+  document.getElementById("fortune").innerText = fortune;
+  document.getElementById("result").style.display = "block";
+}
